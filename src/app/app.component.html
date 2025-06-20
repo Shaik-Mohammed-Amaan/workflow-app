@@ -1,0 +1,48 @@
+<!-- <div class="min-h-screen bg-gray-100 flex flex-col items-center justify-center py-10 px-4 sm:px-6 lg:px-8">
+  <div class="text-center mb-8">
+    <h1 class="text-5xl font-extrabold text-gray-900 leading-tight">Welcome to the WorkFlow!</h1>
+    <p class="mt-3 text-xl text-gray-600">Securely manage your projects and team.</p>
+  </div> -->
+
+  <!-- <div class="flex space-x-6 mb-10"> -->
+    <!-- Login Button -->
+    <!-- <button
+      (click)="showPage = 'login'"
+      [class.bg-blue-600]="showPage === 'login'"
+      [class.hover:bg-blue-700]="showPage === 'login'"
+      [class.bg-gray-300]="showPage !== 'login'"
+      [class.hover:bg-gray-400]="showPage !== 'login'"
+      [class.text-white]="showPage === 'login'"
+      [class.text-gray-800]="showPage !== 'login'"
+      class="py-3 px-8 rounded-lg font-semibold text-lg shadow-md transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+    >
+      Log In
+    </button> -->
+    <!-- Register Button -->
+    <!-- <button
+      (click)="showPage = 'registration'"
+      [class.bg-green-600]="showPage === 'registration'"
+      [class.hover:bg-green-700]="showPage === 'registration'"
+      [class.bg-gray-300]="showPage !== 'registration'"
+      [class.hover:bg-gray-400]="showPage !== 'registration'"
+      [class.text-white]="showPage === 'registration'"
+      [class.text-gray-800]="showPage !== 'registration'"
+      class="py-3 px-8 rounded-lg font-semibold text-lg shadow-md transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+    >
+      Register
+    </button>
+  </div> -->
+
+  <!-- Conditional rendering of components based on 'showPage' -->
+  <!-- The (goToRegister) event listener on app-login will change showPage to 'registration' -->
+  <!-- <ng-container *ngIf="showPage === 'login'">
+    <app-login (goToRegister)="showPage = 'registration'"></app-login>
+  </ng-container> -->
+
+  <!-- The (goToLogin) event listener on app-registration will change showPage to 'login' -->
+  <!-- <ng-container *ngIf="showPage === 'registration'">
+    <app-registration (goToLogin)="showPage = 'login'"></app-registration>
+  </ng-container>
+</div>  -->
+
+<router-outlet></router-outlet>
