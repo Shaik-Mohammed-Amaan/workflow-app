@@ -1,0 +1,57 @@
+<nav class="bg-white shadow-md fixed w-full z-10">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex justify-between h-16">
+      <!-- Logo/Brand -->
+      <div class="flex items-center">
+        <span class="text-xl font-bold text-gray-800">Workflow</span>
+      </div>
+
+      <!-- Navigation Items -->
+      <div class="hidden md:flex items-center space-x-4">
+        <ng-container *ngFor="let item of navItems">
+          <a [routerLink]="item.route"
+             routerLinkActive="text-blue-600"
+             class="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100">
+            <i [class]="item.icon" class="mr-2"></i>
+            {{ item.label }}
+          </a>
+        </ng-container>
+      </div>
+
+      <!-- User Menu -->
+      <div class="flex items-center">
+        <div class="relative" #userMenuContainer>
+          <button (click)="isUserMenuOpen = !isUserMenuOpen"
+                  class="flex items-center space-x-2 text-gray-700 hover:text-blue-600 focus:outline-none">
+            <span class="text-sm font-medium">{{ username }}</span>
+            <i class="fas fa-chevron-down text-xs"></i>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div *ngIf="isUserMenuOpen"
+               class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+            <div class="py-1">
+              <a class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                 (click)="logout()">
+                <i class="fas fa-sign-out-alt mr-2"></i>
+                Logout
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Profile Modal -->
+<div *ngIf="profileModalVisible" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+  <div class="bg-white p-6 rounded shadow-lg w-96">
+    <h3 class="text-xl font-bold mb-4 text-gray-800">User Profile</h3>
+    <p class="mb-2 text-gray-700"><strong>Username:</strong> {{ user?.username }}</p>
+    <p class="mb-4 text-gray-700"><strong>Email:</strong> {{ user?.email }}</p>
+    <button (click)="resetPassword()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mb-4">Reset Password</button>
+    <button (click)="closeProfile()" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">Close</button>
+  </div>
+</div>
+

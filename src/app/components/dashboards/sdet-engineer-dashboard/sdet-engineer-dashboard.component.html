@@ -1,7 +1,85 @@
-<div class="dashboard-container">
-    <h2>SDET Engineer Dashboard</h2>
-    <p *ngIf="username">Welcome, {{ username }}!</p>
-    <p *ngIf="roles.length > 0">Your Roles: {{ roles.join(', ') }}</p>
-    <button (click)="logout()">Logout</button>
-    <p class="mt-4"><a routerLink="/dashboard/default" class="text-blue-600 hover:underline">Go to Default Dashboard</a></p>
+<div class="min-h-screen bg-gray-100">
+  <app-navbar></app-navbar>
+  <div class="flex">
+    <app-sidebar></app-sidebar>
+    <div class="flex-1 lg:ml-64 p-6 mt-16">
+      <!-- Header Section -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">SDET Engineer Dashboard</h1>
+        <p class="text-xl text-gray-600 mt-2">Welcome, {{username}}!</p>
+        <p class="text-gray-500 mt-1">Ready to manage tasks?</p>
+      </div>
+
+      <!-- Project Details Card -->
+      <div *ngIf="projectDetails" class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Project Details</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <p class="text-sm text-gray-600">Project Name</p>
+            <p class="font-medium">{{projectDetails.projectName}}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">Status</p>
+            <span [ngClass]="{
+              'px-2 py-1 text-xs rounded-full': true,
+              'bg-yellow-100 text-yellow-800': projectDetails.status === 'In Progress',
+              'bg-green-100 text-green-800': projectDetails.status === 'Completed',
+              'bg-blue-100 text-blue-800': projectDetails.status === 'Initiated'
+            }">
+              {{projectDetails.status}}
+            </span>
+          </div>
+          <div class="col-span-2">
+            <p class="text-sm text-gray-600">Description</p>
+            <p class="font-medium">{{projectDetails.projectDescription}}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">Product Owner</p>
+            <p class="font-medium">{{projectDetails.productOwnerName}}</p>
+            <p class="text-sm text-gray-500">{{projectDetails.productOwneremail}}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">Created Date</p>
+            <p class="font-medium">{{projectDetails.createdDate | date}}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scrum Team Details -->
+      <div *ngIf="scrumTeamDetails" class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Scrum Team Details</h2>
+        <div class="mb-4">
+          <p class="text-sm text-gray-600">Team Name</p>
+          <p class="font-medium">{{scrumTeamDetails.scrumTeamName}}</p>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Member Email</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr *ngFor="let member of scrumTeamDetails.projectMembers">
+                <td class="px-6 py-4 whitespace-nowrap">{{member.email}}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{member.role}}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span [ngClass]="{
+                    'px-2 py-1 text-xs rounded-full': true,
+                    'bg-green-100 text-green-800': member.status === 'active',
+                    'bg-red-100 text-red-800': member.status === 'inactive'
+                  }">
+                    {{member.status}}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
+</div>

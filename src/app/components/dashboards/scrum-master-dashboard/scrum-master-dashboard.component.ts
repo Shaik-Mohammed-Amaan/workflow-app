@@ -1,26 +1,70 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../../auth/services/auth.service';
+import { ScrumMasterService } from '../../../services/scrum-master.service';
+
+interface ProjectDetails {
+  projectName: string;
+  projectDescription: string;
+  status: string;
+  createdDate: string;
+  productOwnerName: string;
+  productOwneremail: string;
+}
+
+interface ScrumTeamDetails {
+  projectName: string | null;
+  scrumTeamName: string;
+  projectMembers: {
+    email: string;
+    role: string;
+    status: string;
+  }[];
+}
+
+interface CurrentUser {
+  username: string;
+  roles: string[];
+}
+
 @Component({
   selector: 'app-scrum-master-dashboard',
-  standalone: false,
   templateUrl: './scrum-master-dashboard.component.html',
-  styleUrl: './scrum-master-dashboard.component.css'
+  styleUrls: ['./scrum-master-dashboard.component.css'],
+  standalone: false
 })
 export class ScrumMasterDashboardComponent implements OnInit {
   username: string = '';
-  roles: string[] = [];
+  projectDetails: ProjectDetails | null = null;
+  scrumTeamDetails: ScrumTeamDetails | null = null;
 
-  constructor(private authService: AuthService) {}
+  constructor(private scrumMasterService: ScrumMasterService) {}
 
   ngOnInit(): void {
-    const user = this.authService.currentUserValue;
-    if (user) {
+    // Get the stored user data
+    const storedUser = localStorage.getItem('currentUser');
+    if (storedUser) {
+      const user: CurrentUser = JSON.parse(storedUser);
       this.username = user.username;
-      this.roles = user.roles;
     }
+    
+    this.loadProjectDetails();
+    this.loadScrumTeamDetails();
   }
 
-  logout(): void {
-    this.authService.logout();
+  private loadProjectDetails(): void {
+    this.scrumMasterService.getProjectDetails().subscribe({
+      next: (details) => {
+        this.projectDetails = details;
+      },
+      error: (error) => console.error('Error loading project details:', error)
+    });
+  }
+
+  private loadScrumTeamDetails(): void {
+    this.scrumMasterService.getScrumTeamDetails().subscribe({
+      next: (details) => {
+        this.scrumTeamDetails = details;
+      },
+      error: (error) => console.error('Error loading scrum team details:', error)
+    });
   }
 }

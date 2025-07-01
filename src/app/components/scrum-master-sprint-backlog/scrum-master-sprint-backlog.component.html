@@ -1,0 +1,264 @@
+<div class="min-h-screen bg-gray-100">
+    <app-navbar></app-navbar>
+    <div class="flex">
+      <app-sidebar></app-sidebar>
+      <div class="flex-1 lg:ml-64 p-6 mt-16">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Sprint Backlog</h2>
+  
+        <!-- Action Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <!-- Create Sprint Card -->
+          <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+               (click)="showCreateSprintModal = true">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-lg font-semibold text-gray-800">Create Sprint</h3>
+                <p class="text-gray-500 mt-1">Plan and schedule new sprint</p>
+              </div>
+              <div class="bg-blue-500 p-3 rounded-full text-white">
+                <i class="fas fa-plus"></i>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Create Sprint Backlog Card -->
+          <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+               (click)="showCreateBacklogModal = true">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-lg font-semibold text-gray-800">Create Sprint Backlog</h3>
+                <p class="text-gray-500 mt-1">Add user stories to sprint</p>
+              </div>
+              <div class="bg-green-500 p-3 rounded-full text-white">
+                <i class="fas fa-tasks"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sprint Details Section -->
+        <div *ngIf="sprintDetails" class="bg-white rounded-lg shadow-md p-6 mb-8">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">Current Sprint</h3>
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <p class="text-sm text-gray-600">Sprint Title</p>
+              <p class="font-medium">{{sprintDetails.sprintTitle}}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">Sprint Goal</p>
+              <p class="font-medium">{{sprintDetails.sprintGoal}}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">Duration</p>
+              <p class="font-medium">{{sprintDetails.startDate | date}} - {{sprintDetails.endDate | date}}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">Status</p>
+              <span [ngClass]="{
+                'px-2 py-1 text-xs rounded-full inline-block': true,
+                'bg-green-100 text-green-800': sprintDetails.sprintStatus === 'active',
+                'bg-yellow-100 text-yellow-800': sprintDetails.sprintStatus === 'pending',
+                'bg-gray-100 text-gray-800': sprintDetails.sprintStatus === 'completed'
+              }">
+                {{sprintDetails.sprintStatus | titlecase}}
+              </span>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Sprint Backlog Section -->
+        <div *ngIf="sprintDetails?.epicResponse" class="bg-white rounded-lg shadow-md p-6">
+          <div class="mb-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Sprint Backlog</h3>
+            <div class="bg-gray-50 p-4 rounded-lg mb-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p class="text-sm text-gray-600">Project Name</p>
+                  <p class="font-medium">{{sprintDetails?.epicResponse?.projectName}}</p>
+                </div>
+                <div>
+                  <p class="text-sm text-gray-600">Epic</p>
+                  <p class="font-medium">{{sprintDetails?.epicResponse?.epicTitle}}</p>
+                </div>
+              </div>
+            </div>
+    
+            <!-- User Stories Table -->
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Priority</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr *ngFor="let story of sprintDetails?.epicResponse?.userStories">
+                    <td class="px-6 py-4 whitespace-nowrap">{{story.userStoryTitle}}</td>
+                    <td class="px-6 py-4">
+                      <p class="truncate max-w-md" [title]="story.userStoryDescription">
+                        {{story.userStoryDescription}}
+                      </p>
+                    </td>
+                    <td class="px-6 py-4">
+                      <span [ngClass]="{
+                        'px-2 py-1 text-xs rounded-full': true,
+                        'bg-red-100 text-red-800': story.userStoryPriority === 'critical',
+                        'bg-yellow-100 text-yellow-800': story.userStoryPriority === 'high',
+                        'bg-blue-100 text-blue-800': story.userStoryPriority === 'medium',
+                        'bg-gray-100 text-gray-800': story.userStoryPriority === 'low'
+                      }">
+                        {{story.userStoryPriority}}
+                      </span>
+                    </td>
+                    <td class="px-6 py-4">
+                      <span [ngClass]="{
+                        'px-2 py-1 text-xs rounded-full': true,
+                        'bg-yellow-100 text-yellow-800': story.userStoryStatus === 'In Progress',
+                        'bg-green-100 text-green-800': story.userStoryStatus === 'Completed',
+                        'bg-blue-100 text-blue-800': story.userStoryStatus === 'Initiated'
+                      }">
+                        {{story.userStoryStatus}}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Create Sprint Modal -->
+        <div *ngIf="showCreateSprintModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div class="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 class="text-xl font-bold mb-4">Create Sprint</h3>
+            
+            <form [formGroup]="createSprintForm" (ngSubmit)="createSprint()">
+              <!-- Epic Selection -->
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">
+                  Select Epic *
+                </label>
+                <select formControlName="epicTitle" class="w-full p-2 border rounded">
+                  <option value="">Select an epic</option>
+                  <option *ngFor="let epic of epicTitles" [value]="epic">
+                    {{epic}}
+                  </option>
+                </select>
+              </div>
+  
+              <!-- Sprint Title -->
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">
+                  Sprint Title *
+                </label>
+                <input type="text" formControlName="sprintTitle" class="w-full p-2 border rounded">
+              </div>
+  
+              <!-- Sprint Goal -->
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">
+                  Sprint Goal *
+                </label>
+                <textarea formControlName="sprintGoal" class="w-full p-2 border rounded"></textarea>
+              </div>
+  
+              <!-- Start Date -->
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">
+                  Start Date *
+                </label>
+                <input type="date" 
+                       formControlName="startDate" 
+                       [min]="minStartDate"
+                       (change)="onStartDateChange($event)"
+                       class="w-full p-2 border rounded">
+              </div>
+  
+              <!-- End Date -->
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">
+                  End Date *
+                </label>
+                <input type="date" 
+                       formControlName="endDate" 
+                       [min]="minEndDate"
+                       class="w-full p-2 border rounded">
+              </div>
+  
+              <!-- Form Actions -->
+              <div class="flex justify-end space-x-3">
+                <button type="button"
+                        class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                        (click)="showCreateSprintModal = false">
+                  Cancel
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        [disabled]="!createSprintForm.valid">
+                  Create Sprint
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+  
+        <!-- Create Sprint Backlog Modal -->
+        <div *ngIf="showCreateBacklogModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div class="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 class="text-xl font-bold mb-4">Create Sprint Backlog</h3>
+            
+            <form [formGroup]="createBacklogForm" (ngSubmit)="createSprintBacklog()">
+              <!-- Epic Selection -->
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">
+                  Select Epic *
+                </label>
+                <select formControlName="epicTitle" 
+                        (change)="onEpicSelectForBacklog($event)"
+                        class="w-full p-2 border rounded">
+                  <option value="">Select an epic</option>
+                  <option *ngFor="let epic of epicTitles" [value]="epic">
+                    {{epic}}
+                  </option>
+                </select>
+              </div>
+  
+              <!-- User Stories Selection -->
+              <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">
+                  Select User Stories *
+                </label>
+                <select multiple
+                        formControlName="userStoryTitles"
+                        class="w-full p-2 border rounded"
+                        size="4">
+                  <option *ngFor="let story of availableUserStories" [value]="story">
+                    {{story}}
+                  </option>
+                </select>
+                <p class="text-sm text-gray-500 mt-1">Hold Ctrl/Cmd to select multiple stories</p>
+              </div>
+  
+              <!-- Form Actions -->
+              <div class="flex justify-end space-x-3">
+                <button type="button"
+                        class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                        (click)="showCreateBacklogModal = false">
+                  Cancel
+                </button>
+                <button type="submit"
+                        class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        [disabled]="!createBacklogForm.valid">
+                  Create Sprint Backlog
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,7 +1,108 @@
-<div class="dashboard-container">
-    <h2>Scrum Master Dashboard</h2>
-    <p *ngIf="username">Welcome, {{ username }}!</p>
-    <p *ngIf="roles.length > 0">Your Roles: {{ roles.join(', ') }}</p>
-    <button (click)="logout()">Logout</button>
-    <p class="mt-4"><a routerLink="/dashboard/default" class="text-blue-600 hover:underline">Go to Default Dashboard</a></p>
+<div class="min-h-screen bg-gray-100">
+  <app-navbar></app-navbar>
+  <div class="flex">
+    <app-sidebar></app-sidebar>
+    <div class="flex-1 lg:ml-64 p-6 mt-16">
+      <!-- Header Section -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-gray-800">Scrum Master Dashboard</h2>
+        <div class="mt-2 space-y-1">
+          <p class="text-gray-600 text-lg">Welcome, <span class="font-semibold">{{ username }}</span>!</p>
+          <p class="text-blue-600 text-md italic">Ready to manage Scrum Team?</p>
+        </div>
+      </div>
+
+      <!-- Project Details Card -->
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8" *ngIf="projectDetails">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Project Details</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-sm text-gray-600">Project Name</p>
+            <p class="font-medium">{{ projectDetails.projectName }}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">Status</p>
+            <span [ngClass]="{
+              'px-2 py-1 text-sm rounded-full': true,
+              'bg-yellow-100 text-yellow-800': projectDetails.status === 'In Progress',
+              'bg-green-100 text-green-800': projectDetails.status === 'Completed',
+              'bg-blue-100 text-blue-800': projectDetails.status === 'Initiated'
+            }">
+              {{ projectDetails.status }}
+            </span>
+          </div>
+          <div class="col-span-2">
+            <p class="text-sm text-gray-600">Description</p>
+            <p class="font-medium">{{ projectDetails.projectDescription }}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">Created Date</p>
+            <p class="font-medium">{{ projectDetails.createdDate | date }}</p>
+          </div>
+        </div>
+
+        <!-- Product Owner Details -->
+        <div class="mt-6">
+          <h4 class="text-md font-semibold text-gray-800 mb-3">Product Owner Details</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm text-gray-600">Name</p>
+              <p class="font-medium">{{ projectDetails.productOwnerName }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">Email</p>
+              <p class="font-medium">{{ projectDetails.productOwneremail }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scrum Team Details -->
+      <div class="bg-white rounded-lg shadow-md p-6" *ngIf="scrumTeamDetails">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Scrum Team Details</h3>
+        <div class="mb-4">
+          <p class="text-sm text-gray-600">Team Name</p>
+          <p class="font-medium">{{ scrumTeamDetails.scrumTeamName }}</p>
+        </div>
+
+        <!-- Team Members Table -->
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  No.
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Email
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Role
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr *ngFor="let member of scrumTeamDetails.projectMembers; let i = index">
+                <td class="px-6 py-4 whitespace-nowrap">{{ i + 1 }}</td>
+                <td class="px-6 py-4">{{ member.email }}</td>
+                <td class="px-6 py-4 capitalize">{{ member.role }}</td>
+                <td class="px-6 py-4">
+                  <span [ngClass]="{
+                    'px-2 py-1 text-xs rounded-full': true,
+                    'bg-green-100 text-green-800': member.status === 'active',
+                    'bg-red-100 text-red-800': member.status === 'inactive'
+                  }">
+                    {{ member.status }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
+</div>

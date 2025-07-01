@@ -1,33 +1,3 @@
-// import { NgModule } from '@angular/core';
-// import { BrowserModule } from '@angular/platform-browser';
-// import { FormsModule } from '@angular/forms';
-// import { HttpClientModule } from '@angular/common/http'; // CRITICAL: Import HttpClientModule
-
-// import { AppComponent } from './app.component';
-// import { LoginComponent } from './auth/components/login/login.component';
-// import { RegistrationComponent } from './auth/components/registration/registration.component';
-// import { ForgotPasswordComponent } from './auth/components/forgot-password/forgot-password.component';
-// import { ResetPasswordComponent } from './auth/components/reset-password/reset-password.component';
-
-// @NgModule({
-//   declarations: [
-//     AppComponent,
-//     LoginComponent,
-//     RegistrationComponent,
-//     ForgotPasswordComponent,
-//     ResetPasswordComponent
-//   ],
-//   imports: [
-//     BrowserModule,
-//     FormsModule,
-//     HttpClientModule // Add HttpClientModule to imports
-//   ],
-//   providers: [], // AuthService is providedIn: 'root', so no need to list here
-//   bootstrap: [AppComponent]
-// })
-// export class AppModule { }
-
-
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
@@ -39,7 +9,16 @@ import { SdetEngineerDashboardComponent } from './components/dashboards/sdet-eng
 import { AccessDeniedComponent } from './components/dashboards/access-denied/access-denied.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { JwtInterceptor } from './auth/interceptors/jwt.interceptor';
-
+import { NavbarComponent } from './components/navbar/navbar.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { ProductBacklogComponent } from './components/product-backlog/product-backlog.component';
+import { ScrumTeamsComponent } from './components/scrum-teams/scrum-teams.component';
+import { CommonModule } from '@angular/common';
+import { ScrumMasterProductBacklogComponent } from './components/scrum-master-product-backlog/scrum-master-product-backlog.component';
+import { ScrumMasterSprintBacklogComponent } from './components/scrum-master-sprint-backlog/scrum-master-sprint-backlog.component';
+import { SdetEngineerSprintBacklogComponent } from './components/sdet-engineer-sprint-backlog/sdet-engineer-sprint-backlog.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { SdetEngineerTasksComponent } from './components/sdet-engineer-tasks/sdet-engineer-tasks.component';
 
 @NgModule({
   declarations: [
@@ -48,14 +27,25 @@ import { JwtInterceptor } from './auth/interceptors/jwt.interceptor';
     ScrumMasterDashboardComponent,
     SdetEngineerDashboardComponent,
     AccessDeniedComponent,
-   
+    NavbarComponent,
+    SidebarComponent,
+    ProductBacklogComponent,
+    ScrumTeamsComponent,
+    ScrumMasterProductBacklogComponent,
+    ScrumMasterDashboardComponent,
+    ScrumMasterSprintBacklogComponent,
+    SdetEngineerSprintBacklogComponent,
+    SdetEngineerTasksComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    CommonModule,
+    DragDropModule, // Import DragDropModule for drag-and-drop functionality
+    
   ],
   providers: [
     // Provide the JwtInterceptor

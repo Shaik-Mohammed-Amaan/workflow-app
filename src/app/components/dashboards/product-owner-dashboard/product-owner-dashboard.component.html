@@ -1,7 +1,295 @@
-<div class="dashboard-container">
-    <h2>Product Owner Dashboard</h2>
-    <p *ngIf="username">Welcome, {{ username }}!</p>
-    <p *ngIf="roles.length > 0">Your Roles: {{ roles.join(', ') }}</p>
-    <button (click)="logout()">Logout</button>
-    <p class="mt-4"><a routerLink="/dashboard/default" class="text-blue-600 hover:underline">Go to Default Dashboard</a></p>
+<div class="min-h-screen bg-gray-100">
+  <app-navbar></app-navbar>
+  <div class="flex">
+    <app-sidebar></app-sidebar>
+    <div class="flex-1 lg:ml-64 p-6 mt-10">
+      <!-- Header Section -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-gray-800">Product Owner Dashboard</h2>
+        <p class="text-lg text-gray-600 mt-2">Welcome, {{ username }}!</p>
+        <!-- Ensure all curly braces are properly matched -->
+        <p class="text-gray-500 mt-1">Ready to manage projects?</p>
+      </div>
+
+      <!-- Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- Create Project Card -->
+        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer" (click)="openCreateProjectModal()">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">Create Project</h3>
+              <p class="text-gray-500 mt-1">Start a new project</p>
+            </div>
+            <div class="bg-blue-500 p-3 rounded-full text-white">
+              <i class="fas fa-plus"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Assign Scrum Team Card -->
+        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer" (click)="openAssignTeamModal()">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">Assign Scrum Team</h3>
+              <p class="text-gray-500 mt-1">Add team to project</p>
+            </div>
+            <div class="bg-green-500 p-3 rounded-full text-white">
+              <i class="fas fa-plus"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total Projects Card -->
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-lg font-semibold text-gray-800">Total Projects</h3>
+          <p class="text-3xl font-bold text-blue-600 mt-2">{{ totalProjects }}</p>
+          <p class="text-gray-500 mt-1">Projects managed</p>
+        </div>
+      </div>
+
+      <!-- Create Project Modal -->
+      <div *ngIf="showCreateModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+          <h2 class="text-xl font-bold mb-4">Create New Project</h2>
+          
+          <form [formGroup]="createProjectForm" (ngSubmit)="createProject()">
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="projectName">
+                Project Title
+              </label>
+              <input
+                id="projectName"
+                type="text"
+                formControlName="projectName"
+                class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter project title"
+              >
+              <div *ngIf="createProjectForm.get('projectName')?.touched && createProjectForm.get('projectName')?.invalid" 
+                  class="text-red-500 text-sm mt-1">
+                Project title is required and must be at least 3 characters
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2" for="projectDescription">
+                Project Description
+              </label>
+              <textarea
+                id="projectDescription"
+                formControlName="projectDescription"
+                rows="4"
+                class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter project description"
+              ></textarea>
+              <div *ngIf="createProjectForm.get('projectDescription')?.touched && createProjectForm.get('projectDescription')?.invalid" 
+                  class="text-red-500 text-sm mt-1">
+                Project description is required and must be at least 10 characters
+              </div>
+            </div>
+
+            <div class="flex justify-end space-x-3">
+              <button
+                type="button"
+                class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                (click)="closeCreateProjectModal()"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                [disabled]="!createProjectForm.valid"
+                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-blue-300"
+              >
+                Create
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Assign Team Modal -->
+      <div *ngIf="showAssignTeamModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <h2 class="text-xl font-bold mb-4">Assign Scrum Team</h2>
+          
+          <form [formGroup]="assignTeamForm" (ngSubmit)="assignTeam()">
+            <div class="grid grid-cols-2 gap-4 mb-4">
+              <!-- Project Selection -->
+              <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">
+                  Select Project
+                </label>
+                <select
+                  formControlName="projectName"
+                  class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select a project</option>
+                  <option *ngFor="let project of projects" [value]="project.projectName">
+                    {{ project.projectName }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- Scrum Team Name -->
+              <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">
+                  Scrum Team Name
+                </label>
+                <input
+                  type="text"
+                  formControlName="scrumTeamName"
+                  class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter team name"
+                >
+              </div>
+            </div>
+
+            <!-- Team Members -->
+            <div class="space-y-4">
+              <div *ngFor="let member of teamMembers; let i = index" class="flex space-x-4 items-start">
+                <div class="flex-1">
+                  <input
+                    type="email"
+                    [(ngModel)]="member.email"
+                    [ngModelOptions]="{standalone: true}"
+                    class="w-full p-2 border rounded"
+                    placeholder="Enter email"
+                  >
+                </div>
+                
+                <div class="w-48">
+                  <select
+                    [(ngModel)]="member.role"
+                    [ngModelOptions]="{standalone: true}"
+                    (change)="onRoleChange(i, member.role)"
+                    class="w-full p-2 border rounded"
+                  >
+                    <option value="scrumMaster">Scrum Master</option>
+                    <option value="sdetEngineer">SDET Engineer</option>
+                  </select>
+                </div>
+
+                <button
+                  type="button"
+                  (click)="removeTeamMember(i)"
+                  class="p-2 text-red-600 hover:text-red-800"
+                  *ngIf="teamMembers.length > 1"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Add Member Button -->
+            <button
+              type="button"
+              (click)="addTeamMember()"
+              class="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              [disabled]="teamMembers.length >= maxTeamSize"
+            >
+              <i class="fas fa-plus mr-2"></i>Add Member
+            </button>
+
+            <!-- Form Actions -->
+            <div class="flex justify-end space-x-3 mt-6">
+              <button
+                type="button"
+                class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                (click)="closeAssignTeamModal()"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                [disabled]="!(assignTeamForm?.valid && validateTeamComposition?.())"
+                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-blue-300"
+              >
+                Assign Team
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Projects Table -->
+      <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">Project List</h3>
+        
+        <!-- Filters -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+          <select
+            [(ngModel)]="filters.projectStatus"
+            (change)="applyFilters()"
+            class="border p-2 rounded"
+          >
+            <option value="">All Status</option>
+            <option value="Initiated">Initiated</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+          </select>
+          
+          <input
+            type="date"
+            [(ngModel)]="filters.createdDate"
+            (change)="applyFilters()"
+            class="border p-2 rounded"
+          >
+        </div>
+      
+        <!-- Table -->
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Project Name
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Description
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Created Date
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Scrum Teams
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr *ngFor="let project of filteredProjects">
+                <td class="px-6 py-4 whitespace-nowrap">{{ project.projectName }}</td>
+                <td class="px-6 py-4">{{ project.projectDescription }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span [ngClass]="{
+                    'px-2 py-1 rounded-full text-xs font-medium': true,
+                    'bg-blue-100 text-blue-800': project.projectStatus === 'Initiated',
+                    'bg-yellow-100 text-yellow-800': project.projectStatus === 'In Progress',
+                    'bg-green-100 text-green-800': project.projectStatus === 'Completed'
+                  }">
+                    {{ project.projectStatus }}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ project.createdDate }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ project.assignedScrumTeams }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Project Statistics Chart -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md col-span-1">
+          <h3 class="text-lg font-semibold text-gray-800 mb-4">Project Statistics</h3>
+          <div class="h-48">
+            <canvas id="projectChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+</div>
+

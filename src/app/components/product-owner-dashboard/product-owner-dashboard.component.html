@@ -1,0 +1,157 @@
+<!-- Create Project Modal Form -->
+<form [formGroup]="createProjectForm" (ngSubmit)="createProject()">
+  <div class="mb-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2" for="projectName">
+      Project Title
+    </label>
+    <input
+      id="projectName"
+      type="text"
+      formControlName="projectName"
+      class="w-full p-2 border rounded"
+      [ngClass]="{'border-red-500': createProjectForm.get('projectName')?.invalid && createProjectForm.get('projectName')?.touched}"
+    >
+    <div *ngIf="createProjectForm.get('projectName')?.invalid && createProjectForm.get('projectName')?.touched"
+         class="text-red-500 text-xs mt-1">
+      <span *ngIf="createProjectForm.get('projectName')?.errors?.['required']">
+        Project title is required
+      </span>
+      <span *ngIf="createProjectForm.get('projectName')?.errors?.['minlength']">
+        Project title must be at least 3 characters
+      </span>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2" for="projectDescription">
+      Project Description
+    </label>
+    <textarea
+      id="projectDescription"
+      formControlName="projectDescription"
+      rows="4"
+      class="w-full p-2 border rounded"
+      [ngClass]="{'border-red-500': createProjectForm.get('projectDescription')?.invalid && createProjectForm.get('projectDescription')?.touched}"
+    ></textarea>
+    <div *ngIf="createProjectForm.get('projectDescription')?.invalid && createProjectForm.get('projectDescription')?.touched"
+         class="text-red-500 text-xs mt-1">
+      <span *ngIf="createProjectForm.get('projectDescription')?.errors?.['required']">
+        Project description is required
+      </span>
+      <span *ngIf="createProjectForm.get('projectDescription')?.errors?.['minlength']">
+        Project description must be at least 10 characters
+      </span>
+    </div>
+  </div>
+</form>
+
+<!-- Create Epic Form -->
+<form [formGroup]="epicForm" (ngSubmit)="createEpic()">
+  <div class="mb-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2">
+      Select Project
+    </label>
+    <select
+      formControlName="projectName"
+      class="w-full p-2 border rounded"
+      [ngClass]="{'border-red-500': epicForm.get('projectName')?.invalid && epicForm.get('projectName')?.touched}"
+    >
+      <option value="">Select a project</option>
+      <option *ngFor="let project of projects" [value]="project.projectName">
+        {{project.projectName}}
+      </option>
+    </select>
+    <div *ngIf="epicForm.get('projectName')?.invalid && epicForm.get('projectName')?.touched"
+         class="text-red-500 text-xs mt-1">
+      Project selection is required
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2">
+      Epic Title
+    </label>
+    <input
+      type="text"
+      formControlName="epicTitle"
+      class="w-full p-2 border rounded"
+      [ngClass]="{'border-red-500': epicForm.get('epicTitle')?.invalid && epicForm.get('epicTitle')?.touched}"
+    >
+    <div *ngIf="epicForm.get('epicTitle')?.invalid && epicForm.get('epicTitle')?.touched"
+         class="text-red-500 text-xs mt-1">
+      <span *ngIf="epicForm.get('epicTitle')?.errors?.['required']">
+        Epic title is required
+      </span>
+      <span *ngIf="epicForm.get('epicTitle')?.errors?.['pattern']">
+        Epic title can only contain letters, numbers, and underscores
+      </span>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2">
+      Epic Description
+    </label>
+    <textarea
+      formControlName="epicDescription"
+      rows="3"
+      class="w-full p-2 border rounded"
+      [ngClass]="{'border-red-500': epicForm.get('epicDescription')?.invalid && epicForm.get('epicDescription')?.touched}"
+    ></textarea>
+    <div *ngIf="epicForm.get('epicDescription')?.invalid && epicForm.get('epicDescription')?.touched"
+         class="text-red-500 text-xs mt-1">
+      <span *ngIf="epicForm.get('epicDescription')?.errors?.['required']">
+        Epic description is required
+      </span>
+      <span *ngIf="epicForm.get('epicDescription')?.errors?.['minlength']">
+        Epic description must be at least 10 characters
+      </span>
+    </div>
+  </div>
+</form>
+
+<!-- Create User Story Form -->
+<form [formGroup]="userStoryForm" (ngSubmit)="createUserStory()">
+  <!-- Similar validation pattern for all user story fields -->
+  <div class="mb-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2">
+      User Story Title
+    </label>
+    <input
+      type="text"
+      formControlName="userStoryTitle"
+      class="w-full p-2 border rounded"
+      [ngClass]="{'border-red-500': userStoryForm.get('userStoryTitle')?.invalid && userStoryForm.get('userStoryTitle')?.touched}"
+    >
+    <div *ngIf="userStoryForm.get('userStoryTitle')?.invalid && userStoryForm.get('userStoryTitle')?.touched"
+         class="text-red-500 text-xs mt-1">
+      <span *ngIf="userStoryForm.get('userStoryTitle')?.errors?.['required']">
+        User story title is required
+      </span>
+      <span *ngIf="userStoryForm.get('userStoryTitle')?.errors?.['pattern']">
+        User story title can only contain letters, numbers, and underscores
+      </span>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <label class="block text-gray-700 text-sm font-bold mb-2">
+      Priority
+    </label>
+    <select
+      formControlName="userStoryPriority"
+      class="w-full p-2 border rounded"
+      [ngClass]="{'border-red-500': userStoryForm.get('userStoryPriority')?.invalid && userStoryForm.get('userStoryPriority')?.touched}"
+    >
+      <option value="">Select priority</option>
+      <option value="critical">Critical</option>
+      <option value="high">High</option>
+      <option value="medium">Medium</option>
+      <option value="low">Low</option>
+    </select>
+    <div *ngIf="userStoryForm.get('userStoryPriority')?.invalid && userStoryForm.get('userStoryPriority')?.touched"
+         class="text-red-500 text-xs mt-1">
+      Priority selection is required
+    </div>
+  </div>
+</form>

@@ -1,0 +1,313 @@
+<div class="min-h-screen bg-gray-100">
+  <app-navbar></app-navbar>
+  <div class="flex">
+    <app-sidebar></app-sidebar>
+    <div class="flex-1 lg:ml-64 p-6 mt-16">
+      <!-- Header Section -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-gray-800">Product Backlog</h2>
+      </div>
+
+      <!-- Cards Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <!-- Add Epic Card -->
+        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer" (click)="openEpicModal()">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">Add Epic</h3>
+              <p class="text-gray-500 mt-1">Create a new epic</p>
+            </div>
+            <div class="bg-blue-500 p-3 rounded-full text-white">
+              <i class="fas fa-plus"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add User Story Card -->
+        <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow cursor-pointer" (click)="openUserStoryModal()">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-lg font-semibold text-gray-800">Add User Story</h3>
+              <p class="text-gray-500 mt-1">Create a new user story</p>
+            </div>
+            <div class="bg-green-500 p-3 rounded-full text-white">
+              <i class="fas fa-plus"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Project and Epic Selection -->
+      <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Project Selection -->
+          <div>
+            <label class="block text-gray-700 text-sm font-bold mb-2">
+              Select Project
+            </label>
+            <select
+              [(ngModel)]="selectedProject"
+              (ngModelChange)="onProjectSelect($event)"
+              class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select a project</option>
+              <option *ngFor="let project of projects" [value]="project.projectName">
+                {{project.projectName}}
+              </option>
+            </select>
+          </div>
+
+          <!-- Epic Selection -->
+          <div *ngIf="selectedProject">
+            <label class="block text-gray-700 text-sm font-bold mb-2">
+              Select Epic
+            </label>
+            <select
+              [(ngModel)]="selectedEpic"
+              (ngModelChange)="onEpicSelect($event)"
+              class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select an epic</option>
+              <option *ngFor="let title of epicTitles" [value]="title">
+                {{title}}
+              </option>
+            </select>
+            <div *ngIf="epicTitles.length === 0 && selectedProject" class="text-sm text-gray-500 mt-1">
+              No epics found for this project
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Epic Details -->
+      <div *ngIf="epicDetails" class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <div class="mb-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">Epic Details</h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-gray-600">Project Name</p>
+              <p class="font-semibold">{{epicDetails.projectName}}</p>
+            </div>
+            <div>
+              <p class="text-gray-600">Epic Title</p>
+              <p class="font-semibold">{{epicDetails.epicTitle}}</p>
+            </div>
+            <div>
+              <p class="text-gray-600">Status</p>
+              <span [ngClass]="{
+                'px-2 py-1 rounded-full text-xs font-medium': true,
+                'bg-yellow-100 text-yellow-800': epicDetails.epicStatus === 'Ongoing',
+                'bg-green-100 text-green-800': epicDetails.epicStatus === 'Completed',
+                'bg-blue-100 text-blue-800': epicDetails.epicStatus === 'Initiated'
+              }">
+                {{epicDetails.epicStatus}}
+              </span>
+            </div>
+            <div class="col-span-2">
+              <p class="text-gray-600">Description</p>
+              <p>{{epicDetails.epicDescription}}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Stories -->
+        <div class="mb-4">
+          <h4 class="text-lg font-semibold text-gray-800 mb-4">User Stories</h4>
+          <div class="space-y-4">
+            <div *ngFor="let story of epicDetails.userStories" 
+                 class="border rounded-lg p-4 hover:shadow-md transition-shadow">
+              <div class="flex justify-between items-start mb-2">
+                <h5 class="font-semibold">{{story.userStoryTitle}}</h5>
+                <div class="flex space-x-2">
+                  <span [ngClass]="{
+                    'px-2 py-1 rounded-full text-xs font-medium': true,
+                    'bg-red-100 text-red-800': story.userStoryPriority === 'critical',
+                    'bg-yellow-100 text-yellow-800': story.userStoryPriority === 'high',
+                    'bg-blue-100 text-blue-800': story.userStoryPriority === 'medium',
+                    'bg-gray-100 text-gray-800': story.userStoryPriority === 'low'
+                  }">
+                    {{story.userStoryPriority}}
+                  </span>
+                  <span [ngClass]="{
+                    'px-2 py-1 rounded-full text-xs font-medium': true,
+                    'bg-blue-100 text-blue-800': story.userStoryStatus === 'Initiated',
+                    'bg-yellow-100 text-yellow-800': story.userStoryStatus === 'In Progress',
+                    'bg-green-100 text-green-800': story.userStoryStatus === 'Completed'
+                  }">
+                    {{story.userStoryStatus}}
+                  </span>
+                </div>
+              </div>
+              <p class="text-gray-600 mb-2">{{story.userStoryDescription}}</p>
+              <div class="mb-2">
+                <p class="font-semibold mb-1">Acceptance Criteria:</p>
+                <ul class="list-disc pl-5">
+                  <li *ngFor="let criteria of story.userStoryAcceptanceCriteria.split(',')">
+                    {{criteria.trim()}}
+                  </li>
+                </ul>
+              </div>
+              <p class="text-sm text-gray-500">Created: {{story.createdDate | date:'medium'}}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Add User Story Button -->
+        <button
+          (click)="openUserStoryModal()"
+          class="mt-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+        >
+          <i class="fas fa-plus mr-2"></i>Add User Story
+        </button>
+      </div>
+
+      <!-- Epic Modal -->
+      <div *ngIf="showEpicModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+          <h2 class="text-xl font-bold mb-4">Create Epic</h2>
+          
+          <form [formGroup]="epicForm" (ngSubmit)="createEpic()">
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">
+                Select Project
+              </label>
+              <select formControlName="projectName" class="w-full p-2 border rounded">
+                <option value="">Select a project</option>
+                <option *ngFor="let project of projects" [value]="project.projectName">
+                  {{project.projectName}}
+                </option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">
+                Epic Title
+              </label>
+              <input type="text" formControlName="epicTitle" class="w-full p-2 border rounded">
+            </div>
+
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">
+                Epic Description
+              </label>
+              <textarea formControlName="epicDescription" rows="3" class="w-full p-2 border rounded"></textarea>
+            </div>
+
+            <div class="flex justify-end space-x-3">
+              <button type="button" class="px-4 py-2 bg-gray-300 text-gray-700 rounded" (click)="closeEpicModal()">
+                Cancel
+              </button>
+              <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded" [disabled]="!epicForm.valid">
+                Create
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- User Story Modal -->
+      <div *ngIf="showUserStoryModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <h2 class="text-xl font-bold mb-4">Create User Story</h2>
+          
+          <form [formGroup]="userStoryForm" (ngSubmit)="createUserStory()">
+            <!-- Epic Selection -->
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">
+                Epic *
+              </label>
+              <select formControlName="epicTitle" class="w-full p-2 border rounded">
+                <option value="">Select an epic</option>
+                <option *ngFor="let epic of epicTitles" [value]="epic">
+                  {{epic}}
+                </option>
+              </select>
+            </div>
+
+            <!-- User Story Title -->
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">
+                User Story Title *
+              </label>
+              <input type="text" formControlName="userStoryTitle" class="w-full p-2 border rounded">
+            </div>
+
+            <!-- Description -->
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">
+                Description *
+              </label>
+              <textarea formControlName="userStoryDescription" rows="3" class="w-full p-2 border rounded"></textarea>
+            </div>
+
+            <!-- Priority -->
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">
+                Priority *
+              </label>
+              <select formControlName="userStoryPriority" class="w-full p-2 border rounded">
+                <option value="">Select priority</option>
+                <option value="critical">Critical</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+
+            <!-- Acceptance Criteria -->
+            <div class="mb-4">
+              <label class="block text-gray-700 text-sm font-bold mb-2">
+                Acceptance Criteria *
+              </label>
+              <div class="space-y-2">
+                <div *ngFor="let criteria of acceptanceCriteria; let i = index" class="flex space-x-2">
+                  <input 
+                    type="text" 
+                    [value]="criteria"
+                    (input)="onAcceptanceCriteriaChange(i, $event)"
+                    class="flex-1 p-2 border rounded" 
+                    placeholder="Enter acceptance criteria"
+                  >
+                  <button 
+                    type="button" 
+                    (click)="removeAcceptanceCriteria(i)"
+                    *ngIf="acceptanceCriteria.length > 1"
+                    class="text-red-500 hover:text-red-700"
+                  >
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </div>
+              <button 
+                type="button"
+                (click)="addAcceptanceCriteria()"
+                class="mt-2 text-blue-500 hover:text-blue-700"
+              >
+                <i class="fas fa-plus mr-1"></i> Add Criteria
+              </button>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex justify-end space-x-3">
+              <button
+                type="button"
+                class="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+                (click)="closeUserStoryModal()"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                [disabled]="!isUserStoryValid()"              >
+                Create
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+

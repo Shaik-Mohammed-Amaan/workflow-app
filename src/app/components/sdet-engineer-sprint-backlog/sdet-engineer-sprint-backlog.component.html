@@ -1,0 +1,115 @@
+<div class="min-h-screen bg-gray-100">
+  <app-navbar></app-navbar>
+  <div class="flex">
+    <app-sidebar></app-sidebar>
+    <div class="flex-1 lg:ml-64 p-6 mt-16">
+      <!-- Scrum Master Details -->
+      <div *ngIf="scrumMaster" class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Scrum Master Details</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-sm text-gray-600">Name</p>
+            <p class="font-medium">{{scrumMaster.name}}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">Email</p>
+            <p class="font-medium">{{scrumMaster.email}}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Sprint Details -->
+      <div *ngIf="sprintDetails" class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Current Sprint</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <p class="text-sm text-gray-600">Sprint Title</p>
+            <p class="font-medium">{{sprintDetails.sprintTitle}}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">Status</p>
+            <span [ngClass]="{
+              'px-2 py-1 text-xs rounded-full': true,
+              'bg-green-100 text-green-800': sprintDetails.sprintStatus === 'active',
+              'bg-yellow-100 text-yellow-800': sprintDetails.sprintStatus === 'pending',
+              'bg-gray-100 text-gray-800': sprintDetails.sprintStatus === 'completed'
+            }">
+              {{sprintDetails.sprintStatus}}
+            </span>
+          </div>
+          <div class="col-span-2">
+            <p class="text-sm text-gray-600">Sprint Goal</p>
+            <p class="font-medium">{{sprintDetails.sprintGoal}}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-600">Duration</p>
+            <p class="font-medium">{{sprintDetails.startDate | date}} - {{sprintDetails.endDate | date}}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sprint Backlog Table -->
+      <div *ngIf="sprintDetails?.epicResponse" class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Sprint Backlog</h2>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Priority</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr *ngFor="let story of sprintDetails.epicResponse.userStories">
+                <td class="px-6 py-4 whitespace-nowrap">{{story.userStoryId}}</td>
+                <td class="px-6 py-4">{{story.userStoryTitle}}</td>
+                <td class="px-6 py-4">
+                  <div class="relative group">
+                    <p class="text-sm truncate max-w-md" [title]="story.userStoryDescription">
+                      {{story.userStoryDescription}}
+                    </p>
+                    <div class="hidden group-hover:block absolute z-10 w-96 p-4 bg-gray-900 text-white text-sm rounded-lg shadow-lg">
+                      <p class="mb-2">{{story.userStoryDescription}}</p>
+                      <div>
+                        <p class="font-semibold mb-1">Acceptance Criteria:</p>
+                        <ul class="list-disc pl-4">
+                          <li *ngFor="let criteria of story.userStoryAcceptanceCriteria.split(',')">
+                            {{criteria.trim()}}
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span [ngClass]="{
+                    'px-2 py-1 text-xs rounded-full': true,
+                    'bg-red-100 text-red-800': story.userStoryPriority === 'critical',
+                    'bg-yellow-100 text-yellow-800': story.userStoryPriority === 'high',
+                    'bg-blue-100 text-blue-800': story.userStoryPriority === 'medium',
+                    'bg-gray-100 text-gray-800': story.userStoryPriority === 'low'
+                  }">
+                    {{story.userStoryPriority}}
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span [ngClass]="{
+                    'px-2 py-1 text-xs rounded-full': true,
+                    'bg-yellow-100 text-yellow-800': story.userStoryStatus === 'In Progress',
+                    'bg-green-100 text-green-800': story.userStoryStatus === 'Completed',
+                    'bg-blue-100 text-blue-800': story.userStoryStatus === 'Initiated'
+                  }">
+                    {{story.userStoryStatus}}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

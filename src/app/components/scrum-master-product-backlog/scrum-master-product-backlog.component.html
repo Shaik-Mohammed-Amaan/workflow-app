@@ -1,0 +1,105 @@
+<div class="min-h-screen bg-gray-100">
+  <app-navbar></app-navbar>
+  <div class="flex">
+    <app-sidebar></app-sidebar>
+    <div class="flex-1 lg:ml-64 p-6 mt-16">
+      <!-- Header Section -->
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold text-gray-800">Product Backlog</h2>
+      </div>
+
+      <!-- Epic Selection -->
+      <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <div>
+          <label class="block text-gray-700 text-sm font-bold mb-2">
+            Select Epic
+          </label>
+          <select
+            [(ngModel)]="selectedEpic"
+            (ngModelChange)="onEpicSelect($event)"
+            class="w-full md:w-1/2 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">Select an epic</option>
+            <option *ngFor="let epic of epicTitles" [value]="epic">
+              {{epic}}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Epic Details -->
+      <div *ngIf="epicDetails" class="bg-white p-6 rounded-lg shadow-md mb-8">
+        <div class="mb-6">
+          <h3 class="text-xl font-bold text-gray-800 mb-4">Epic Details</h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-gray-600">Project Name</p>
+              <p class="font-semibold">{{epicDetails.projectName}}</p>
+            </div>
+            <div>
+              <p class="text-gray-600">Epic Title</p>
+              <p class="font-semibold">{{epicDetails.epicTitle}}</p>
+            </div>
+            <div>
+              <p class="text-gray-600">Status</p>
+              <span [ngClass]="{
+                'px-2 py-1 rounded-full text-xs font-medium': true,
+                'bg-yellow-100 text-yellow-800': epicDetails.epicStatus === 'In Progress',
+                'bg-green-100 text-green-800': epicDetails.epicStatus === 'Completed',
+                'bg-blue-100 text-blue-800': epicDetails.epicStatus === 'Initiated'
+              }">
+                {{epicDetails.epicStatus}}
+              </span>
+            </div>
+            <div class="col-span-2">
+              <p class="text-gray-600">Description</p>
+              <p>{{epicDetails.epicDescription}}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Stories -->
+        <div class="mb-4">
+          <h4 class="text-lg font-semibold text-gray-800 mb-4">User Stories</h4>
+          <div class="space-y-4">
+            <div *ngFor="let story of epicDetails.userStories" 
+                 class="border rounded-lg p-4 hover:shadow-md transition-shadow">
+              <div class="flex justify-between items-start mb-2">
+                <h5 class="font-semibold">{{story.userStoryTitle}}</h5>
+                <div class="flex space-x-2">
+                  <span [ngClass]="{
+                    'px-2 py-1 rounded-full text-xs font-medium': true,
+                    'bg-red-100 text-red-800': story.userStoryPriority === 'critical',
+                    'bg-yellow-100 text-yellow-800': story.userStoryPriority === 'high',
+                    'bg-blue-100 text-blue-800': story.userStoryPriority === 'medium',
+                    'bg-gray-100 text-gray-800': story.userStoryPriority === 'low'
+                  }">
+                    {{story.userStoryPriority}}
+                  </span>
+                  <span [ngClass]="{
+                    'px-2 py-1 rounded-full text-xs font-medium': true,
+                    'bg-blue-100 text-blue-800': story.userStoryStatus === 'Initiated',
+                    'bg-yellow-100 text-yellow-800': story.userStoryStatus === 'In Progress',
+                    'bg-green-100 text-green-800': story.userStoryStatus === 'Completed'
+                  }">
+                    {{story.userStoryStatus}}
+                  </span>
+                </div>
+              </div>
+              <p class="text-gray-600 mb-2">{{story.userStoryDescription}}</p>
+              <div class="mb-2">
+                <p class="font-semibold mb-1">Acceptance Criteria:</p>
+                <ul class="list-disc pl-5">
+                  <li *ngFor="let criteria of story.userStoryAcceptanceCriteria.split(',')">
+                    {{criteria.trim()}}
+                  </li>
+                </ul>
+              </div>
+              <p class="text-sm text-gray-500">Created: {{story.createdDate | date:'medium'}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

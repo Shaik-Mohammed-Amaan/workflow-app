@@ -1,0 +1,21 @@
+<aside class="bg-gray-800 text-white w-64 min-h-screen fixed left-0 top-0 pt-16">
+  <nav class="mt-6">
+    <div class="px-4 py-2">
+      <ng-container *ngFor="let item of menuItems">
+        <a [routerLink]="item.route"
+           routerLinkActive="bg-gray-900"
+           class="flex items-center px-4 py-3 transition-colors duration-200 rounded-lg hover:bg-gray-700 mb-2">
+          <i [class]="item.icon + ' mr-3'"></i>
+          <span class="text-gray-100">{{ item.title }}</span>
+        </a>
+      </ng-container>
+    </div>
+  </nav>
+</aside>
+
+<!-- Mobile Toggle Button -->
+<button 
+  class="fixed bottom-4 right-4 lg:hidden z-50 bg-gray-800 text-white p-3 rounded-full shadow-lg"
+  (click)="toggleSidebar()">
+  <i [class]="isSidebarOpen ? 'fas fa-times' : 'fas fa-bars'"></i>
+</button>

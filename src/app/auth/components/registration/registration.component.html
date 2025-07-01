@@ -108,18 +108,18 @@
           <label for="productOwner" class="ml-2 block text-sm text-gray-900">Product Owner</label>
         </div>
         <div class="flex items-center">
-          <input type="radio" id="scrumMaster" name="role" value="Scrum Master" [(ngModel)]="role" (change)="validateUserRole(); onRoleChange()" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
+          <input type="radio" id="scrumMaster" name="role" value="scrumMaster" [(ngModel)]="role" (change)="validateUserRole(); onRoleChange()" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
           <label for="scrumMaster" class="ml-2 block text-sm text-gray-900">Scrum Master</label>
         </div>
         <div class="flex items-center">
-          <input type="radio" id="sdetEngineer" name="role" value="SDET Engineer" [(ngModel)]="role" (change)="validateUserRole(); onRoleChange()" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
+          <input type="radio" id="sdetEngineer" name="role" value="sdetEngineer" [(ngModel)]="role" (change)="validateUserRole(); onRoleChange()" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300">
           <label for="sdetEngineer" class="ml-2 block text-sm text-gray-900">SDET Engineer</label>
         </div>
       </div>
     </div>
 
     <!-- Conditional "Project Code" Field -->
-    <div *ngIf="role === 'Scrum Master' || role === 'SDET Engineer'">
+    <div *ngIf="role === 'scrumMaster' || role === 'sdetEngineer'">
       <div *ngIf="projectCodeError" class="text-red-600 text-xs font-semibold mb-1 ml-1 px-2 py-1 bg-red-100 rounded-md">
         {{ projectCodeError }}
       </div>

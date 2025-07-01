@@ -176,7 +176,7 @@ export class RegistrationComponent implements OnInit {
       password: this.password,
       confirmPassword: this.confirmPassword,
       role: [this.role],
-      projectCode: (this.role === 'Scrum Master' || this.role === 'SDET Engineer') ? this.projectCode.trim() : ''
+      otp: (this.role === 'scrumMaster' || this.role === 'sdetEngineer') ? this.projectCode.trim() : ''
     };
 
     this.authService.register(registrationData).subscribe({
