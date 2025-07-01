@@ -52,9 +52,28 @@ export class LoginComponent implements OnInit {
   }
 
   validateLoginIdentifier(): boolean {
-    this.loginIdentifierError = null;
-    if (!this.loginIdentifier.trim()) {
-      this.loginIdentifierError = 'Email or Username is required.';
+    if (!this.loginIdentifier) {
+      this.loginIdentifierError = 'Username is required';
+      return false;
+    }
+
+    // Check if the input contains only alphabets
+    if (!/^[a-zA-Z]+$/.test(this.loginIdentifier)) {
+      this.loginIdentifierError = 'Username should contain only alphabets';
+      return false;
+    }
+
+    this.loginIdentifierError = '';
+    return true;
+  }
+
+  // Add keypress event handler to prevent non-alphabet characters
+  onUsernameKeyPress(event: KeyboardEvent): boolean {
+    const pattern = /[a-zA-Z]/;
+    const inputChar = String.fromCharCode(event.charCode);
+
+    if (!pattern.test(inputChar)) {
+      event.preventDefault();
       return false;
     }
     return true;

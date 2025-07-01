@@ -5,16 +5,17 @@
       <div *ngIf="loginIdentifierError" class="text-red-600 text-xs font-semibold mb-1 ml-1 px-2 py-1 bg-red-100 rounded-md">
         {{ loginIdentifierError }}
       </div>
-      <label for="loginIdentifier" class="block text-sm font-medium text-gray-700 mb-1">Email or Username</label>
+      <label for="loginIdentifier" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
       <input
         type="text"
         id="loginIdentifier"
         name="loginIdentifier"
         [(ngModel)]="loginIdentifier"
         (blur)="validateLoginIdentifier()"
+        (keypress)="onUsernameKeyPress($event)"
         class="block w-full px-4 py-2 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-base"
         [class.border-red-500]="loginIdentifierError"
-        placeholder="Enter your email or username"
+        placeholder="Enter your username (alphabets only)"
         required
       >
     </div>

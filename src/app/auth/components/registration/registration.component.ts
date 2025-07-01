@@ -65,12 +65,27 @@ export class RegistrationComponent implements OnInit {
   }
 
   validateUsername(): boolean {
-    this.usernameError = null;
-    if (!this.username.trim()) {
-      this.usernameError = 'Username is required.';
+    if (!this.username) {
+      this.usernameError = 'Username is required';
       return false;
-    } else if (this.username.trim().length < 3) {
-      this.usernameError = 'Username must be at least 3 characters long.';
+    }
+
+    // Check if username contains only alphabets
+    if (!/^[a-zA-Z]+$/.test(this.username)) {
+      this.usernameError = 'Username should contain only alphabets';
+      return false;
+    }
+
+    this.usernameError = '';
+    return true;
+  }
+
+  onUsernameKeyPress(event: KeyboardEvent): boolean {
+    const pattern = /[a-zA-Z]/;
+    const inputChar = String.fromCharCode(event.charCode);
+
+    if (!pattern.test(inputChar)) {
+      event.preventDefault();
       return false;
     }
     return true;
